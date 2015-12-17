@@ -1,0 +1,4 @@
+# Tasks for gcc 4.8 toolchain
+
+- include: centos.yml
+  when: ansible_distribution == 'CentOS'

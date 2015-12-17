@@ -1,0 +1,18 @@
+- name: "Ensure devtoolset-2 packages are installed"
+  yum: >
+    name="{{ devtoolset_2_packages|join(',') }}"
+    state=present
+    enablerepo=slc6-devtoolset
+  when: devtoolset_2_packages|length > 0
+  tags:
+    - devtoolset2
+    - pkgs
+
+- name: "Enable devtoolset-2 packages"
+  shell: |
+    executable=/bin/bash
+
+    scl enable devtoolset-2 bash
+  tags:
+    - devtoolset2
+    - pkgs
