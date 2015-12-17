@@ -1,4 +1,4 @@
-- name: "Ensure devtoolset-2 packages are installed"
+- name: "Ensure devtoolset2 packages are installed"
   yum: >
     name="{{ devtoolset_2_packages|join(',') }}"
     state=present
@@ -8,11 +8,33 @@
     - devtoolset2
     - pkgs
 
-- name: "Enable devtoolset-2 packages"
-  shell: |
-    executable=/bin/bash
+# Since the devtoolset tries to persist through sudo when compiling, they made a sudo wrapper. However
+# this wrapper was severely broken. We patched this up and got it to work under most cases, however
+# until this is merged into the devtoolset package we will have to manually patch it here.
+# References:
+#   - https://access.redhat.com/documentation/en-US/Red_Hat_Developer_Toolset/2/html-single/2.1_Release_Notes/index.html
+#     "This script does not currently parse or pass normal sudo options, only sudo COMMAND ARGS ...."
+#
+#   - https://bugzilla.redhat.com/show_bug.cgi?id=849452
+#
+#   - https://bugzilla.redhat.com/attachment.cgi?id=632150
+#     "TODO: parse & pass-through sudo options from $@"
+- name: "Patch devtoolset2 sudo script"
+  copy: >
+    src="{{centos_distribution}}/sudo"
+    dest="/opt/rh/devtoolset-2/root/usr/bin/sudo"
+    owner=root
+    group=root
+    mode=0555
+  tags:
+    - devtoolset2
+    - pkgs
 
-    scl enable devtoolset-2 bash
+- name: "Enable devtoolset2 packages"
+  file: >
+    src=/opt/rh/devtoolset-2/enable
+    dest=/etc/profile.d/devtoolset2.sh
+    state=link
   tags:
     - devtoolset2
     - pkgs

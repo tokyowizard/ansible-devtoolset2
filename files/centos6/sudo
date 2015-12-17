@@ -1,0 +1,30 @@
+#! /bin/sh
+
+# Reset in case getopts has been used previously in the shell
+OPTIND=1
+
+# Parse & pass-through sudo options from $@
+sudo_options="-E"
+while getopts ":AbC:Eg:hHi:l:k:Knp:Pr:Ss:t:u:U:vV" OPT; do
+   if [ "$OPT" == "?" ]; then
+      OPTIND=$((OPTIND+1))
+      break
+   elif [ "$OPT" == ":" ]; then
+      sudo_options="$sudo_options -$OPTARG"
+   elif [ -n "$OPTARG" ]; then
+      sudo_options="$sudo_options -$OPT \"$OPTARG\""
+   else
+      sudo_options="$sudo_options -$OPT"
+   fi
+done
+
+# Remove all parsed options from argument list
+shift $((OPTIND-1))
+cmd_options="$@"
+
+# Execute sudo command persisting devtoolset
+if [ -z "$cmd_options" ]; then
+   eval "/usr/bin/sudo $sudo_options"
+else
+   eval "/usr/bin/sudo $sudo_options LD_LIBRARY_PATH=$LD_LIBRARY_PATH PATH=$PATH scl enable devtoolset-2 \"$cmd_options\""
+fi
