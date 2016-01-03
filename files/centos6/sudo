@@ -26,5 +26,5 @@ cmd_options="$@"
 if [ -z "$cmd_options" ]; then
    eval "/usr/bin/sudo $sudo_options"
 else
-   eval "/usr/bin/sudo $sudo_options LD_LIBRARY_PATH=$LD_LIBRARY_PATH PATH=$PATH scl enable devtoolset-2 \"$cmd_options\""
+   eval "/usr/bin/sudo $sudo_options LD_LIBRARY_PATH=$(/usr/bin/sudo printenv LD_LIBRARY_PATH):$LD_LIBRARY_PATH PATH=$(/usr/bin/sudo printenv PATH):$PATH scl enable devtoolset-2 \"$cmd_options\""
 fi
