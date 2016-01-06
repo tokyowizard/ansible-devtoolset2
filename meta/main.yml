@@ -1,0 +1,19 @@
+galaxy_info:
+  author: Almir Kadric <akadric@wizcorp.jp>
+  description: Installs devtoolset2 gcc toolchain on a server
+  company: Wizcorp K.K.
+  license: MIT
+  min_ansible_version: 1.8.1
+  platforms:
+    - name: EL
+      versions:
+        - 6
+  categories:
+    - development
+    - web
+dependencies:
+  - role: aeriscloud.repos
+    repositories:
+      centos6:
+        - slc6-devtoolset
+  - role: aeriscloud.yum
