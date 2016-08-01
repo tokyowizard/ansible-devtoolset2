@@ -16,4 +16,6 @@ dependencies:
     repositories:
       centos6:
         - slc6-devtoolset
+    tags:
+      - devtoolset2
   - role: AerisCloud.yum
